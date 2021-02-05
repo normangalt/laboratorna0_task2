@@ -1,7 +1,7 @@
 '''
 Puzzle.py
 
-GITHUB repository link:https://github.com/normangalt/task_2_laboratorna_0
+GITHUB repository link:https://github.com/normangalt/laboratorna0_task2
 '''
 
 def read_board(input_path: str):
