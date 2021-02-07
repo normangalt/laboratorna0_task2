@@ -17,13 +17,17 @@ def read_board(input_path: str):
 def check_row(board: list):
     """
     Check if a row is constructed according to the rules.
+
+    >>> check_row([['1','2'],['3','4']])
+    True
+    >>> check_row([['1','1'],['3','4']])
+    False
     """
 
     for line in board:
         for element in line:
-            if element != '*' and \
-               element != ' ' and \
-               element not in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '0'):
+            if (element in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '0') and \
+                 line.count(element) > 1):
                 return False
 
     return True
@@ -31,12 +35,17 @@ def check_row(board: list):
 def validate_columns(board: list):
     '''
     Check if the columns are constructed according to the rules.
+
+    >>> validate_columns([['1','2'],['3','4']])
+    True
+    >>> validate_columns([['1','2'],['1','4']])
+    False
     '''
 
     transposed_board = [[board[jindex][index] for jindex in range(len(board))]
                         for index in range(len(board[0]))]
 
-    if not validate_rows(transposed_board):
+    if not check_row(transposed_board):
         return False
 
     return True
@@ -44,29 +53,47 @@ def validate_columns(board: list):
 def validate_rows(board: list):
     '''
     Check if the rows are constructed according to the rules.
+
+    >>> validate_rows([['1','2'],['3','4']])
+    True
+    >>> validate_rows([['1','1'],['3','4']])
+    False
     '''
 
-    for line in board:
-        if not check_row(line):
-            return False
+    if not check_row(board):
+        return False
 
     return True
 
 def validate_colors(board: list):
     '''
     Check if colors are constructed according to the rules.
-    '''
 
+    >>> validate_colors([['1','2','2','2','2','2','2','2','2'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4'],\
+                         ['3','4','4','4','4','4','4','4','4']])
+    False
+    '''
+    color_board = []
     for index in range(9):
-        horizontal_color = board[-1-index]
-        vertical_color = [board[index][jindex] for jindex in range(9) ]
-        color_list = vertical_color + horizontal_color
-        if not check_row(color_list):
-            return False
+        horizontal_color = board[-1-index][index:]
+        vertical_color = [board[jindex][index] for jindex in range(9 - index - 1)]
+        color_list = vertical_color + list(horizontal_color)
+        color_board.append(color_list)
+
+    if not check_row(color_board):
+        return False
 
     return True
 
-def check_board(board: list):
+def validate_board(board: list):
     '''
     Check if the board is constructed according to the rules.
     '''
@@ -76,7 +103,6 @@ def check_board(board: list):
         return False
 
     return True
-
-if __name__ == '__main__':
-    board_input = read_board(input('Enter path to a file: '))
-    print(check_board(board_input))
+import doctest
+doctest.testmod()
+print(validate_board(read_board('input_zd2.txt')))
